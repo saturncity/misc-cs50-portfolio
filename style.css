@@ -1,0 +1,283 @@
+/* style.css */
+
+/*
+   Changes:
+   - Arrows and notification still invert color with transitions.
+   - Minimize repositioning of cover pages.
+   - On slide change, only move the relevant slides (old and new).
+   - Don't always re-render each slide; just adjust two at a time.
+*/
+
+/* Root vars */
+:root {
+    --bg-dev: #FBEAEB;
+    --bg-art: #1A1A1A;
+    --bg-theatre: #2F3C7E;
+    --font-main: Helvetica, Arial, sans-serif;
+    --text-light: #CCC;
+    --footer-bg: #222;
+    --transition-duration: 0.5s;
+    --cover-notification-bottom-space: 10%;
+}
+
+body, html {
+    margin: 0;
+    height: 100%;
+    font-family: var(--font-main);
+    background: #000;
+    overflow-x: hidden;
+}
+
+#cover-pages {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+    background: #000;
+}
+
+/* Initially we only position the active cover page at 0%.
+   We'll slide in the next or prev cover page as needed. */
+
+.cover-page {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    padding: 2rem;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform var(--transition-duration) ease-in-out;
+}
+
+.cover-page-dev { background-color: var(--bg-dev); transform: translateX(0); }
+.cover-page-art { background-color: var(--bg-art); transform: translateX(100%); }
+.cover-page-theatre { background-color: var(--bg-theatre); transform: translateX(200%); }
+
+.developer-title {
+    font-size: 3rem;
+    color: #333;
+}
+
+.cursor {
+    display: inline-block;
+    width: 1ch;
+    animation: blinkCursor 1s infinite;
+}
+
+@keyframes blinkCursor {
+    0%, 50% { opacity: 1; }
+    51%, 100% { opacity: 0; }
+}
+
+.art-title {
+    font-size: 3rem;
+    background: linear-gradient(270deg, pink, peachpuff, yellow, pink);
+    background-size: 600% 600%;
+    -webkit-background-clip: text;
+    color: transparent;
+    animation: artGradientShift 8s ease infinite;
+}
+
+@keyframes artGradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+.theatre-title {
+    font-size: 3rem;
+    font-family: 'Bitter', serif;
+    color: #fff;
+    animation: glowText 2s infinite alternate;
+}
+
+@keyframes glowText {
+    0% { text-shadow: 0 0 5px #fff; }
+    100% { text-shadow: 0 0 20px #fff; }
+}
+
+#notificationText {
+    position: absolute;
+    bottom: var(--cover-notification-bottom-space);
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 1rem;
+    z-index: 9999;
+    width: 90%;
+    max-width: 600px;
+    text-align: center;
+    transition: color 0.5s ease;
+}
+
+.cover-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    z-index: 9999;
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+    transition: color 0.5s ease;
+    color: #000;
+}
+
+.cover-arrow-left { left: 2%; }
+.cover-arrow-right { right: 2%; }
+
+.arrow-symbol {
+    font-size: 3rem;
+    line-height: 1;
+    display: inline-block;
+}
+
+/* No slide animation for carousel content */
+#portfolioCarousel {
+    background: transparent;
+    margin-top: -1px;
+}
+.carousel-item {
+    background: transparent;
+    transition: none !important;
+}
+.carousel-inner {
+    transition: none !important;
+}
+
+.content-section {
+    padding: 2rem;
+    text-align: center;
+    background: #f0f0f0;
+    color: #333;
+    min-height: 50vh;
+}
+
+.footer-container {
+    background-color: var(--footer-bg);
+    color: var(--text-light);
+    padding: 3rem 4rem;
+    box-sizing: border-box;
+    text-align: center;
+}
+
+.footer-content {
+    display: inline-flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 4rem;
+    flex-wrap: wrap;
+}
+
+.footer-left,
+.footer-right {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    min-width: 200px;
+}
+
+.contact-section p, .contact-section a {
+    text-align: left;
+    display: block;
+}
+
+.connect-section p, .connect-section a {
+    text-align: left;
+    display: block;
+    margin: 0.3rem 0;
+}
+
+.footer-section h3 {
+    margin: 0;
+    font-size: 1rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+}
+
+.footer-section p {
+    margin: 0.3rem 0;
+    font-size: 0.95rem;
+}
+
+.footer-section a {
+    color: var(--text-light);
+    text-decoration: none;
+    font-size: 0.95rem;
+}
+
+.footer-section a:hover {
+    text-decoration: underline;
+}
+
+.calendar-container {
+    display: flex;
+    flex-direction: row;
+    gap: 2rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.calendar-month {
+    display: inline-block;
+    text-align: center;
+    color: #fff;
+}
+
+.calendar-header {
+    font-weight: normal;
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+    text-decoration: none;
+}
+
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    grid-gap: 0.5rem;
+}
+
+.calendar-grid div {
+    text-align: center;
+    position: relative;
+    font-size: 0.8rem;
+}
+
+.calendar-grid div[title] {
+    cursor: pointer;
+    position: relative;
+}
+
+.calendar-grid div[title]:hover::after {
+    content: attr(title);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #333;
+    color: #fff;
+    padding: 0.3rem 0.5rem;
+    border-radius: 3px;
+    white-space: nowrap;
+    font-size: 0.7rem;
+    z-index: 9999;
+}
+
+.unavailable {
+    color: red;
+}
+
+.grayed-out {
+    color: gray;
+    opacity: 0.7;
+}
+
+.availability-note {
+    font-size: 0.9rem;
+    margin-top: 0.5rem;
+}

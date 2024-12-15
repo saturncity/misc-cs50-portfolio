@@ -1,10 +1,82 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Portfolio Carousel</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-$END$
+
+<div id="cover-pages">
+    <div class="cover-page cover-page-dev">
+        <h1 class="developer-title">Developer Portfolio<span class="cursor">_</span></h1>
+    </div>
+    <div class="cover-page cover-page-art">
+        <h1 class="art-title">Art Portfolio</h1>
+    </div>
+    <div class="cover-page cover-page-theatre">
+        <h1 class="theatre-title">Theatre Portfolio</h1>
+    </div>
+    <div id="notificationText">Use the arrows to navigate. Scroll to view the portfolio.</div>
+    <button class="cover-arrow cover-arrow-left" type="button" data-bs-target="#portfolioCarousel" data-bs-slide="prev" aria-label="Previous Slide">
+        <span class="arrow-symbol" aria-hidden="true">&lt;</span>
+    </button>
+    <button class="cover-arrow cover-arrow-right" type="button" data-bs-target="#portfolioCarousel" data-bs-slide="next" aria-label="Next Slide">
+        <span class="arrow-symbol" aria-hidden="true">&gt;</span>
+    </button>
+</div>
+
+<div id="portfolioCarousel" class="carousel" data-bs-ride="false">
+    <div class="carousel-inner">
+        <div class="carousel-item active" data-slide-index="0">
+            <div class="content-section dev-content">
+                <h2>Developer Portfolio Projects</h2>
+                <p>Developer-related projects, code samples, and engineering practices.</p>
+            </div>
+        </div>
+        <div class="carousel-item" data-slide-index="1">
+            <div class="content-section art-content">
+                <h2>Art Portfolio Gallery</h2>
+                <p>Showcases of various art pieces, mediums, and creative processes.</p>
+            </div>
+        </div>
+        <div class="carousel-item" data-slide-index="2">
+            <div class="content-section theatre-content">
+                <h2>Theatre Portfolio Performances</h2>
+                <p>Highlights of theatrical performances, stage design, and dramaturgical research.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer class="footer-container">
+    <div class="footer-content">
+        <div class="footer-left">
+            <div class="footer-section contact-section">
+                <h3>CONTACT</h3>
+                <p><a href="mailto:jasonlenz26@gmail.com">jasonlenz26@gmail.com</a></p>
+                <p><a href="tel:+447783071224">+44 7783 071224</a></p>
+                <p><a href="tel:+639177104618">+63 917 710 4618</a></p>
+            </div>
+            <div class="footer-section connect-section">
+                <h3>CONNECT</h3>
+                <p><a href="cv/my_cv.pdf" target="_blank">CV</a></p>
+                <p><a href="#" target="_blank">LinkedIn</a></p>
+                <p><a href="#" target="_blank">Instagram</a></p>
+                <p><a href="#" target="_blank">GitHub</a></p>
+            </div>
+        </div>
+        <div class="footer-right">
+            <div id="calendar-container" class="calendar-container"></div>
+            <p class="availability-note">Showing availability for the next 90 days.</p>
+        </div>
+    </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="script.js"></script>
+<script src="footer_calendar.js"></script>
 </body>
 </html>
