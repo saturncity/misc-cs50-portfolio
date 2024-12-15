@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Availability Management</title>
+</head>
+<body>
+<h1>Admin: Manage Availability</h1>
+
+<!-- Button to Purge Past Dates -->
+<button id="purge-past-dates" onclick="purgePastDates()">Purge Dates in Past</button>
+
+<hr>
+
+<!-- Form to Mark a Single Date as Unavailable -->
+<form id="add-availability-form">
+  <label for="date">Single Date (YYYY-MM-DD):</label>
+  <input type="date" id="date" name="date" required>
+  <br>
+  <button type="submit">Mark Single Date as Unavailable</button>
+</form>
+
+<hr>
+
+<!-- Form to Mark a Range of Dates as Unavailable -->
+<form id="add-range-availability-form">
+  <label for="start-date">Start Date:</label>
+  <input type="date" id="start-date" name="start-date" required>
+  <br>
+  <label for="end-date">End Date:</label>
+  <input type="date" id="end-date" name="end-date" required>
+  <br>
+  <button type="submit">Mark Range as Unavailable</button>
+</form>
+
+<hr>
+
+<!-- List Existing Unavailability -->
+<h2>Existing Unavailability</h2>
+<div id="availability-list">
+  <p>Loading...</p>
+</div>
+
+<script>
+  async function fetchAvailability() {
+    const response = await fetch('/availability_data');
+    return response.ok ? await response.json() : {};
+  }
+
+  async function loadAvailability() {
+    const availabilityData = await fetchAvailability();
+    const listDiv = document.getElementById('availability-list');
+    listDiv.innerHTML = '';
+
+    if (Object.keys(availabilityData).length === 0) {
+      listDiv.innerHTML = '<p>No unavailable dates found.</p>';
+      return;
+    }
+
+    const table = document.createElement('table');
+    table.border = '1';
+
+    const headerRow = document.createElement('tr');
+    headerRow.innerHTML = `
+                <th>Date</th>
+                <th>Status</th>
+                <th>Actions</th>
+            `;
+    table.appendChild(headerRow);
+
+    for (const [date, status] of Object.entries(availabilityData)) {
+      if (status === 'unavailable') {
+        const row = document.createElement('tr');
+
+        row.innerHTML = `
+                        <td>${date}</td>
+                        <td>${status}</td>
+                        <td>
+                            <button onclick="deleteAvailability('${date}')">Delete</button>
+                        </td>
+                    `;
+        table.appendChild(row);
+      }
+    }
+
+    listDiv.appendChild(table);
+  }
+
+  async function addUnavailableDate(event) {
+    event.preventDefault();
+    const date = document.getElementById('date').value;
+
+    const response = await fetch('/update_availability', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ date, status: 'unavailable' })
+    });
+
+    if (response.ok) {
+      alert('Date marked as unavailable successfully.');
+      loadAvailability();
+    } else {
+      alert('Error marking date as unavailable.');
+    }
+  }
+
+  async function addUnavailableRange(event) {
+    event.preventDefault();
+    const startDate = document.getElementById('start-date').value;
+    const endDate = document.getElementById('end-date').value;
+
+    if (new Date(startDate) > new Date(endDate)) {
+      alert('Start date must be before or equal to the end date.');
+      return;
+    }
+
+    const currentDate = new Date(startDate);
+    const endDateObj = new Date(endDate);
+
+    while (currentDate <= endDateObj) {
+      const formattedDate = currentDate.toISOString().split('T')[0];
+      const response = await fetch('/update_availability', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ date: formattedDate, status: 'unavailable' })
+      });
+
+      if (!response.ok) {
+        alert(`Error marking date ${formattedDate} as unavailable.`);
+        return;
+      }
+
+      currentDate.setDate(currentDate.getDate() + 1);
+    }
+
+    alert('Date range marked as unavailable successfully.');
+    loadAvailability();
+  }
+
+  async function deleteAvailability(date) {
+    const response = await fetch('/update_availability', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ date, status: '' }) // Empty status deletes the record
+    });
+
+    if (response.ok) {
+      alert(`Deleted unavailable date: ${date}`);
+      loadAvailability();
+    } else {
+      alert('Error deleting unavailable date.');
+    }
+  }
+
+  async function purgePastDates() {
+    const today = new Date().toISOString().split('T')[0]; // Today's date in YYYY-MM-DD format
+    const availabilityData = await fetchAvailability();
+
+    for (const [date, status] of Object.entries(availabilityData)) {
+      if (status === 'unavailable' && date < today) {
+        const response = await fetch('/update_availability', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ date, status: '' }) // Empty status deletes the record
+        });
+
+        if (!response.ok) {
+          alert(`Error deleting past date: ${date}`);
+          return;
+        }
+      }
+    }
+
+    alert('Past unavailable dates purged successfully.');
+    loadAvailability();
+  }
+
+  document.getElementById('add-availability-form').addEventListener('submit', addUnavailableDate);
+  document.getElementById('add-range-availability-form').addEventListener('submit', addUnavailableRange);
+
+  // Load availability data on page load
+  loadAvailability();
+</script>
+</body>
+</html>

@@ -1,14 +1,5 @@
-/* style.css */
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap');
 
-/*
-   Changes:
-   - Arrows and notification still invert color with transitions.
-   - Minimize repositioning of cover pages.
-   - On slide change, only move the relevant slides (old and new).
-   - Don't always re-render each slide; just adjust two at a time.
-*/
-
-/* Root vars */
 :root {
     --bg-dev: #FBEAEB;
     --bg-art: #1A1A1A;
@@ -36,9 +27,6 @@ body, html {
     background: #000;
 }
 
-/* Initially we only position the active cover page at 0%.
-   We'll slide in the next or prev cover page as needed. */
-
 .cover-page {
     position: absolute;
     top: 0;
@@ -57,6 +45,7 @@ body, html {
 .cover-page-theatre { background-color: var(--bg-theatre); transform: translateX(200%); }
 
 .developer-title {
+    font-family: 'JetBrains Mono', monospace; /* Use JetBrains Mono */
     font-size: 3rem;
     color: #333;
 }
@@ -135,7 +124,6 @@ body, html {
     display: inline-block;
 }
 
-/* No slide animation for carousel content */
 #portfolioCarousel {
     background: transparent;
     margin-top: -1px;
@@ -238,7 +226,7 @@ body, html {
 
 .calendar-grid {
     display: grid;
-    grid-template-columns: repeat(8, 1fr);
+    grid-template-columns: repeat(7, 1fr);
     grid-gap: 0.5rem;
 }
 
@@ -256,26 +244,35 @@ body, html {
 .calendar-grid div[title]:hover::after {
     content: attr(title);
     position: absolute;
-    bottom: 100%;
+    bottom: 120%; /* Adjusted for better visibility */
     left: 50%;
     transform: translateX(-50%);
-    background: #333;
+    background: rgba(0, 0, 0, 0.8);
     color: #fff;
-    padding: 0.3rem 0.5rem;
-    border-radius: 3px;
+    padding: 0.5rem 0.8rem;
+    border-radius: 5px;
     white-space: nowrap;
-    font-size: 0.7rem;
-    z-index: 9999;
+    font-size: 0.8rem;
+    z-index: 10;
+    opacity: 1;
 }
 
-.unavailable {
-    color: red;
+.calendar-grid div[title]:hover {
+    z-index: 10;
 }
+
 
 .grayed-out {
     color: gray;
     opacity: 0.7;
+    pointer-events: none;
 }
+
+.unavailable {
+    color: red;
+    cursor: pointer;
+}
+
 
 .availability-note {
     font-size: 0.9rem;
